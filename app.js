@@ -15,7 +15,7 @@ app.get('/api', (req, res) => {
   const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const currentDay = daysOfWeek[new Date().getDay()];
 
-  // Get the current UTC time with +/-2 minute window
+  // Get the current UTC time
   const currentUtcTime = new Date().toISOString();
 
   // Define GitHub URLs (Replace with actual URLs)
@@ -33,14 +33,11 @@ app.get('/api', (req, res) => {
     status_code: 200 // Success status code
   };
 
-  // Convert JSON to a string with newlines
-  const formattedResponse = JSON.stringify(responseJson, null, 2);
-
   // Set response content type to JSON
   res.setHeader('Content-Type', 'application/json');
 
-  // Send the formatted JSON response
-  res.send(formattedResponse);
+  // Send the JSON response
+  res.json(responseJson);
 });
 
 // Start the server
