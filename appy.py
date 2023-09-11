@@ -23,8 +23,8 @@ def get_info():
     utc_time = current_time_utc.strftime('%Y-%m-%d %H:%M:%S')
 
     # GitHub URLs
-    github_file_url = "https://github.com/username/repo/blob/main/file_name.ext"
-    github_repo_url = "https://github.com/username/repo"
+    github_file_url = "https://github.com/adannalyn/hngx/blob/main/appy.py"
+    github_repo_url = "https://github.com/adannalyn/hngx.git"
 
     response_data = {
         "slack_name": slack_name,
