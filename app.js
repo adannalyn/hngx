@@ -15,14 +15,14 @@ app.get('/api', (req, res) => {
   const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const currentDay = daysOfWeek[new Date().getDay()];
 
-  // Get the current UTC time with +/-2 minute window and format it
-  const currentUtcTime = new Date().toISOString().replace('T', ' ').replace('Z', '');
+  // Get the current UTC time with +/-2 minute window
+  const currentUtcTime = new Date().toISOString();
 
   // Define GitHub URLs (Replace with actual URLs)
   const githubFileUrl = 'https://github.com/adannalyn/hngx/blob/main/app.js';
   const githubRepoUrl = 'https://github.com/adannalyn/hngx.git';
 
-  // Construct the JSON response with newline formatting
+  // Construct the JSON response
   const responseJson = {
     slack_name: slackName,
     current_day: currentDay,
