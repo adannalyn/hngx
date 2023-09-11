@@ -15,8 +15,9 @@ app.get('/api', (req, res) => {
   const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const currentDay = daysOfWeek[new Date().getDay()];
 
-  // Get the current UTC time
-  const currentUtcTime = new Date().toISOString();
+  // Get the current UTC time in the desired format
+  const now = new Date();
+  const currentUtcTime = `${now.getFullYear()}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getDate().toString().padStart(2, '0')}T${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}Z`;
 
   // Define GitHub URLs (Replace with actual URLs)
   const githubFileUrl = 'https://github.com/adannalyn/hngx/blob/main/app.js';
@@ -33,11 +34,14 @@ app.get('/api', (req, res) => {
     status_code: 200 // Success status code
   };
 
+  // Convert JSON to a string with newlines
+  const formattedResponse = JSON.stringify(responseJson, null, 2);
+
   // Set response content type to JSON
   res.setHeader('Content-Type', 'application/json');
 
-  // Send the JSON response
-  res.json(responseJson);
+  // Send the formatted JSON response
+  res.send(formattedResponse);
 });
 
 // Start the server
