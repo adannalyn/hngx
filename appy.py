@@ -1,15 +1,14 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request
 import datetime
 import json
-import webbrowser  # Import the webbrowser module for optional web browser opening
 
 def get_info(slack_name, track):
     """Gets the required information and returns it in JSON format."""
     now = datetime.datetime.utcnow()
-    utc_time = now.strftime("%Y-%m-%d %H:%M:%S")
+    utc_time = now.isoformat()
 
-    github_file_url = "https://github.com/adannalyn/hngx/blob/main/appy.py"
-    github_repo_url = "https://github.com/adannalyn/hngx.git"
+    github_file_url = "https://github.com/your_username/repo/blob/main/backend_stage_one.py"
+    github_repo_url = "https://github.com/your_username/repo"
 
     info = {
         "slack_name": slack_name,
@@ -35,6 +34,4 @@ def get_info_endpoint():
     return info, 200
 
 if __name__ == "__main__":
-    # Optional: Open the browser when the script is run
-    webbrowser.open("http://localhost:5000/get_info?slack_name=your_name&track=backend")
     app.run(debug=True)
