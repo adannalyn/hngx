@@ -19,8 +19,8 @@ app.get('/api', (req, res) => {
   const currentUtcTime = new Date().toISOString();
 
   // Define GitHub URLs (Replace with actual URLs)
-  const githubFileUrl = 'https://github.com/username/repo/blob/main/file_name.ext';
-  const githubRepoUrl = 'https://github.com/username/repo';
+  const githubFileUrl = 'https://github.com/adannalyn/hngx/blob/main/appy.py';
+  const githubRepoUrl = 'https://github.com/adannalyn/hngx.git';
 
   // Construct the JSON response
   const responseJson = {
