@@ -8,8 +8,8 @@ def get_info(slack_name, track):
     now = datetime.datetime.utcnow()
     utc_time = now.strftime("%Y-%m-%d %H:%M:%S")
 
-    github_file_url = "https://github.com/your_username/repo/blob/main/backend_stage_one.py"
-    github_repo_url = "https://github.com/your_username/repo"
+    github_file_url = "https://github.com/adannalyn/hngx/blob/main/appy.py"
+    github_repo_url = "https://github.com/adannalyn/hngx.git"
 
     info = {
         "slack_name": slack_name,
