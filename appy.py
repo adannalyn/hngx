@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from datetime import datetime
+from flask.json import jsonify
 
 app = Flask(__name__)
 
@@ -11,7 +12,6 @@ def get_info():
     if slack_name is None or track is None:
         return jsonify({"error": "Missing parameters"}), 400
 
-    # Validate track to ensure it's "backend"
     if track != "backend":
         return jsonify({"error": "Invalid track parameter"}), 400
 
