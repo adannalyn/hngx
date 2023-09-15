@@ -17,42 +17,46 @@ def create_person(name, age, email):
         print(response.json())
     else:
         print("Failed to create person.")
+        print(response.status_code)
         print(response.text)
 
-# Function to fetch details of a person
-def fetch_person(person_id):
-    url = f"{base_url}/{person_id}"
+# Function to fetch details of a person by name
+def fetch_person_by_name(name):
+    url = f"{base_url}/{name}"
     response = requests.get(url)
     if response.status_code == 200:
-        print("Person details fetched successfully.")
+        print("Fetched person details successfully.")
         print(response.json())
     else:
         print("Failed to fetch person details.")
+        print(response.status_code)
         print(response.text)
 
-# Function to update details of an existing person
-def update_person(person_id, age, email):
-    url = f"{base_url}/{person_id}"
+# Function to update details of an existing person by name
+def update_person_by_name(name, age, email):
+    url = f"{base_url}/{name}"
     data = {
         "age": age,
         "email": email
     }
     response = requests.put(url, json=data)
     if response.status_code == 200:
-        print("Person details updated successfully.")
+        print("Person updated successfully.")
         print(response.json())
     else:
-        print("Failed to update person details.")
+        print("Failed to update person.")
+        print(response.status_code)
         print(response.text)
 
-# Function to delete a person
-def delete_person(person_id):
-    url = f"{base_url}/{person_id}"
+# Function to delete a person by name
+def delete_person_by_name(name):
+    url = f"{base_url}/{name}"
     response = requests.delete(url)
     if response.status_code == 204:
         print("Person deleted successfully.")
     else:
         print("Failed to delete person.")
+        print(response.status_code)
         print(response.text)
 
 # Test the API
@@ -65,23 +69,19 @@ def run_tests():
     # Create a new person
     create_person(name, age, email)
 
-    # Fetch person details
-    fetch_person(1)  # Assuming the ID is 1
+    # Fetch person details by name
+    fetch_person_by_name(name)
 
-    # Update person details
+    # Update person details by name
     new_age = 31
     new_email = "mark.updated@example.com"
-    update_person(1, new_age, new_email)  # Assuming the ID is 1
+    update_person_by_name(name, new_age, new_email)
 
-    # Fetch updated person details
-    fetch_person(1)  # Assuming the ID is 1
+    # Fetch updated person details by name
+    fetch_person_by_name(name)
 
-    # Delete the person
-    delete_person(1)  # Assuming the ID is 1
-
-    # Attempt to fetch person details after deletion
-    fetch_person(1)  # Assuming the ID is 1
-
+    # Delete the person by name
+    delete_person_by_name(name)
 
 # Run the tests
 run_tests()
