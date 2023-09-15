@@ -7,7 +7,7 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
 // MongoDB Atlas connection string (replace with your credentials)
-const uri = "mongodb+srv://chinyere:<password>@jobinairee.pgajtf0.mongodb.net/<dbname>?retryWrites=true&w=majority";
+const uri = "mongodb+srv://chinyere:uqqzMpiisHWJDX0f@jobinairee.pgajtf0.mongodb.net/<dbname>?retryWrites=true&w=majority";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
