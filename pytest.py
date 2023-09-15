@@ -6,7 +6,7 @@ base_url = 'http://localhost:3000/api/people'  # Replace with your API endpoint
 # Function to create a new person
 def create_person(name):
     data = {"name": name}
-    response = requests.post(base_url, json=data)
+    response = requests.post(http://localhost:3000/api/people, json=data)
     return response
 
 # Function to fetch details of a person
