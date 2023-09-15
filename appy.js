@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -107,11 +107,7 @@ app.delete('/api/people/:id', async (req, res) => {
 async function startServer() {
   try {
     const db = await connectToMongoDB();
-    
-    // Ensure the 'people' collection exists in the database
-    const collection = db.collection('people');
-    await collection.createIndex({ _id: 1 }, { unique: true });
-    
+
     // Start the Express server
     app.listen(port, () => {
       console.log(`Server is running on port ${port}`);

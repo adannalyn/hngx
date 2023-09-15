@@ -3,10 +3,13 @@ import requests
 # Define the API base URL
 base_url = 'http://localhost:3000/api/people'  # Replace with your API endpoint
 
+# Initialize person_id to None
+person_id = None
+
 # Function to create a new person
 def create_person(name):
     data = {"name": name}
-    response = requests.post(http://localhost:3000/api/people, json=data)
+    response = requests.post(base_url, json=data)
     return response
 
 # Function to fetch details of a person
@@ -31,18 +34,36 @@ def delete_person(person_id):
 if __name__ == "__main__":
     # Create a new person
     create_response = create_person("Mark Essien")
-    print("Create Response:", create_response.json())
+    if create_response.status_code == 201:
+        person_id = create_response.json().get('_id')
+        if person_id:
+            print(f"Person created with ID: {person_id}")
+        else:
+            print("Response did not contain '_id' field.")
+    else:
+        print(f"Failed to create person. Status code: {create_response.status_code}")
 
     # Fetch details of the created person
-    person_id = create_response.json()['_id']
-    fetch_response = fetch_person(person_id)
-    print("Fetch Response:", fetch_response.json())
+    if person_id:
+        fetch_response = fetch_person(person_id)
+        if fetch_response.status_code == 200:
+            person_data = fetch_response.json()
+            print("Fetch Response:", person_data)
+        else:
+            print(f"Failed to fetch person details. Status code: {fetch_response.status_code}")
 
-    # Modify the person's details
-    update_data = {"name": "Updated Name"}
-    update_response = update_person(person_id, update_data)
-    print("Update Response:", update_response.json())
+        # Modify the person's details
+        if person_data:
+            update_data = {"name": "Updated Name"}
+            update_response = update_person(person_id, update_data)
+            if update_response.status_code == 200:
+                print("Update Response:", update_response.json())
+            else:
+                print(f"Failed to update person details. Status code: {update_response.status_code}")
 
-    # Remove the person
-    delete_response = delete_person(person_id)
-    print("Delete Response:", delete_response.status_code)
+            # Remove the person
+            delete_response = delete_person(person_id)
+            if delete_response.status_code == 204:
+                print("Person removed successfully.")
+            else:
+                print(f"Failed to remove person. Status code: {delete_response.status_code}")
