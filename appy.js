@@ -7,7 +7,7 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
 // MongoDB Atlas connection string (replace with your credentials)
-const uri = "mongodb+srv://chinyere:uqqzMpiisHWJDX0f@jobinairee.pgajtf0.mongodb.net/?retryWrites=true&w=majority";
+const uri = "mongodb+srv://chinyere:<password>@jobinairee.pgajtf0.mongodb.net/<dbname>?retryWrites=true&w=majority";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -30,9 +30,7 @@ async function connectToMongoDB() {
   }
 }
 
-// Routes for CRUD operations
-
-// Create a new person
+// CREATE: Adding a new person
 app.post('/api/people', async (req, res) => {
   const db = await connectToMongoDB();
   const collection = db.collection('people');
@@ -47,21 +45,7 @@ app.post('/api/people', async (req, res) => {
   }
 });
 
-// Get all people
-app.get('/api/people', async (req, res) => {
-  const db = await connectToMongoDB();
-  const collection = db.collection('people');
-
-  try {
-    const people = await collection.find({}).toArray();
-    res.status(200).json(people);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
-});
-
-// Get a person by ID
+// READ: Fetching details of a person
 app.get('/api/people/:id', async (req, res) => {
   const db = await connectToMongoDB();
   const collection = db.collection('people');
@@ -80,7 +64,7 @@ app.get('/api/people/:id', async (req, res) => {
   }
 });
 
-// Update a person by ID
+// UPDATE: Modifying details of an existing person
 app.put('/api/people/:id', async (req, res) => {
   const db = await connectToMongoDB();
   const collection = db.collection('people');
@@ -100,7 +84,7 @@ app.put('/api/people/:id', async (req, res) => {
   }
 });
 
-// Delete a person by ID
+// DELETE: Removing a person
 app.delete('/api/people/:id', async (req, res) => {
   const db = await connectToMongoDB();
   const collection = db.collection('people');
@@ -123,7 +107,11 @@ app.delete('/api/people/:id', async (req, res) => {
 async function startServer() {
   try {
     const db = await connectToMongoDB();
-
+    
+    // Ensure the 'people' collection exists in the database
+    const collection = db.collection('people');
+    await collection.createIndex({ _id: 1 }, { unique: true });
+    
     // Start the Express server
     app.listen(port, () => {
       console.log(`Server is running on port ${port}`);
