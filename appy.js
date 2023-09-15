@@ -7,7 +7,7 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
 // MongoDB Atlas connection string (replace with your credentials)
-const uri = "mongodb+srv://chinyere:uqqzMpiisHWJDX0f@jobinairee.pgajtf0.mongodb.net/<dbname>?retryWrites=true&w=majority";
+const uri = "mongodb+srv://chinyere:uqqzMpiisHWJDX0f@jobinairee.pgajtf0.mongodb.net/jobin?retryWrites=true&w=majority";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -30,20 +30,37 @@ async function connectToMongoDB() {
   }
 }
 
-// CREATE: Adding a new person
-app.post('/api/people', async (req, res) => {
-  const db = await connectToMongoDB();
-  const collection = db.collection('people');
-  const personData = req.body;
 
+// Create a new person
+app.post('/api/people', async (req, res) => {
   try {
+    // Connect to MongoDB
+    const db = await connectToMongoDB();
+    const collection = db.collection('people');
+    
+    // Get person data from request body
+    const personData = req.body;
+    
+    // Insert person data into the collection
     const result = await collection.insertOne(personData);
-    res.status(201).json(result.ops[0]);
+
+    if (result && result.ops && result.ops.length > 0) {
+      res.status(201).json(result.ops[0]); // Return the created person
+    } else {
+      res.status(500).json({ error: 'Failed to create a person' });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+
+
+
+
+
+
 
 // READ: Fetching details of a person
 app.get('/api/people/:id', async (req, res) => {
