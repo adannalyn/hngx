@@ -16,15 +16,15 @@ def create_person(name, age, email):
     print(response.json())
 
 # Function to fetch details of a person
-def fetch_person(name):
-    url = f"{base_url}/{name}"
+def fetch_person(person_id):
+    url = f"{base_url}/{person_id}"
     response = requests.get(url)
     print(response.status_code)
     print(response.json())
 
 # Function to update details of an existing person
-def update_person(name, age, email):
-    url = f"{base_url}/{name}"
+def update_person(person_id, age, email):
+    url = f"{base_url}/{person_id}"
     data = {
         "age": age,
         "email": email
@@ -34,8 +34,8 @@ def update_person(name, age, email):
     print(response.json())
 
 # Function to delete a person
-def delete_person(name):
-    url = f"{base_url}/{name}"
+def delete_person(person_id):
+    url = f"{base_url}/{person_id}"
     response = requests.delete(url)
     print(response.status_code)
 
