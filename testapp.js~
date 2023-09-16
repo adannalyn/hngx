@@ -1,0 +1,98 @@
+const chai = require('chai');
+const chaiHttp = require('chai-http');
+const app = require('./appy');
+
+chai.use(chaiHttp);
+
+describe('ExpressJS application with MongoDB tests', () => {
+  // Create a test person
+  it('should create a new person', async () => {
+    const personData = {
+      name: 'John Doe',
+      age: 30,
+    };
+
+    const response = await chai.request(app)
+      .post('/api/people')
+      .send(personData);
+
+    chai.expect(response.status).to.equal(201);
+    chai.expect(response.body).to.have.property('name', 'John Doe');
+    chai.expect(response.body).to.have.property('age', 30);
+  });
+
+  // Read a test person
+  it('should fetch details of a person', async () => {
+    const personData = {
+      name: 'John Doe',
+      age: 30,
+    };
+
+    const createResponse = await chai.request(app)
+      .post('/api/people')
+      .send(personData);
+
+    const personId = createResponse.body._id;
+
+    const response = await chai.request(app)
+      .get(`/api/people/${personId}`);
+
+    chai.expect(response.status).to.equal(200);
+    chai.expect(response.body).to.have.property('name', 'John Doe');
+    chai.expect(response.body).to.have.property('age', 30);
+  });
+
+  // Update a test person
+  it('should modify details of an existing person', async () => {
+    const personData = {
+      name: 'Jane Doe',
+      age: 35,
+    };
+
+    const createResponse = await chai.request(app)
+      .post('/api/people')
+      .send(personData);
+
+    const personId = createResponse.body._id;
+
+    const updatedData = {
+      name: 'Jane Doe (updated)',
+    };
+
+    const response = await chai.request(app)
+      .put(`/api/people/${personId}`)
+      .send(updatedData);
+
+    chai.expect(response.status).to.equal(200);
+    chai.expect(response.body).to.have.property('message', 'Person updated successfully');
+
+    const updatedPersonResponse = await chai.request(app)
+      .get(`/api/people/${personId}`);
+
+    chai.expect(updatedPersonResponse.body).to.have.property('name', 'Jane Doe (updated)');
+  });
+
+  // Delete a test person
+  it('should remove a person', async () => {
+    const personData = {
+      name: 'John Doe',
+      age: 30,
+    };
+
+    const createResponse = await chai.request(app)
+      .post('/api/people')
+      .send(personData);
+
+    const personId = createResponse.body._id;
+
+    const response = await chai.request(app)
+      .delete(`/api/people/${personId}`);
+
+    chai.expect(response.status).to.equal(204);
+
+    const getPersonResponse = await chai.request(app)
+      .get(`/api/people/${personId}`);
+
+    chai.expect(getPersonResponse.status).to.equal(404);
+  });
+});

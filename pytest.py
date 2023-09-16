@@ -3,85 +3,95 @@ import requests
 # Base URL for the API
 base_url = "http://localhost:3000/api/people"
 
-# Function to create a new person
-def create_person(name, age, email):
-    url = base_url
-    data = {
-        "name": name,
-        "age": age,
-        "email": email
-    }
-    response = requests.post(url, json=data)
-    if response.status_code == 201:
-        print("Person created successfully.")
-        print(response.json())
-    else:
-        print("Failed to create person.")
-        print(response.status_code)
-        print(response.text)
+# Define a class to represent a person
+class Person:
+    def __init__(self, name, age, email):
+        self.name = name
+        self.age = age
+        self.email = email
 
-# Function to fetch details of a person by name
-def fetch_person_by_name(name):
-    url = f"{base_url}/{name}"
+    def to_json(self):
+        return {
+            "name": self.name,
+            "age": self.age,
+            "email": self.email,
+        }
+
+# Define a function to create a new person
+def create_person(person):
+    url = f"{base_url}"
+    data = person.to_json()
+    headers = {"Content-Type": "application/json"}
+
+    response = requests.post(url, json=data, headers=headers)
+    response.raise_for_status()
+    # The server should return the created person with an assigned ID
+    return Person(**response.json())
+
+# Define a function to fetch a person by ID
+def fetch_person(person_id):
+    url = f"{base_url}/{person_id}"
+
     response = requests.get(url)
+    response.raise_for_status()
     if response.status_code == 200:
-        print("Fetched person details successfully.")
-        print(response.json())
+        return Person(**response.json())
     else:
-        print("Failed to fetch person details.")
-        print(response.status_code)
-        print(response.text)
+        return None
 
-# Function to update details of an existing person by name
-def update_person_by_name(name, age, email):
-    url = f"{base_url}/{name}"
-    data = {
-        "age": age,
-        "email": email
-    }
-    response = requests.put(url, json=data)
-    if response.status_code == 200:
-        print("Person updated successfully.")
-        print(response.json())
-    else:
-        print("Failed to update person.")
-        print(response.status_code)
-        print(response.text)
+# Define a function to update a person by ID
+def update_person(person):
+    url = f"{base_url}/{person.id}"
+    data = person.to_json()
+    headers = {"Content-Type": "application/json"}
 
-# Function to delete a person by name
-def delete_person_by_name(name):
-    url = f"{base_url}/{name}"
+    response = requests.put(url, json=data, headers=headers)
+    response.raise_for_status()
+    return True
+
+# Define a function to delete a person by ID
+def delete_person(person_id):
+    url = f"{base_url}/{person_id}"
+
     response = requests.delete(url)
-    if response.status_code == 204:
-        print("Person deleted successfully.")
-    else:
-        print("Failed to delete person.")
-        print(response.status_code)
-        print(response.text)
+    response.raise_for_status()
+    return True
 
-# Test the API
-def run_tests():
-    # Test data
-    name = "Mark Essien"
-    age = 30
-    email = "mark@example.com"
-
+# Define a function to test all the CRUD operations
+def test_crud_operations():
     # Create a new person
-    create_person(name, age, email)
+    person = Person("John Doe", 35, "john.doe@example.com")
+    created_person = create_person(person)
 
-    # Fetch person details by name
-    fetch_person_by_name(name)
+    # Assert that the created person is a Person object
+    assert isinstance(created_person, Person)
 
-    # Update person details by name
-    new_age = 31
-    new_email = "mark.updated@example.com"
-    update_person_by_name(name, new_age, new_email)
+    # Fetch the person by ID
+    fetched_person = fetch_person(created_person.id)
 
-    # Fetch updated person details by name
-    fetch_person_by_name(name)
+    # Assert that the fetched person is equal to the created person
+    assert fetched_person == created_person
 
-    # Delete the person by name
-    delete_person_by_name(name)
+    # Update the person's name
+    person.name = "Jane Doe"
+    update_person(person)
 
-# Run the tests
-run_tests()
+    # Fetch the person by ID again
+    fetched_person = fetch_person(created_person.id)
+
+    # Assert that the fetched person's name has been updated
+    assert fetched_person.name == "Jane Doe"
+
+    # Delete the person
+    delete_person(created_person.id)
+
+    # Fetch the person by ID again
+    fetched_person = fetch_person(created_person.id)
+
+    # Assert that the person does not exist
+    assert fetched_person is None
+
+# Example usage:
+
+# Test all the CRUD operations
+test_crud_operations()

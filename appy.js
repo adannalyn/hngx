@@ -1,21 +1,18 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { MongoClient, ObjectId } = require('mongodb');
 
 const app = express();
 const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 
-// MongoDB Atlas connection string (replace with your credentials)
-const uri = "mongodb+srv://chinyere:uqqzMpiisHWJDX0f@jobinairee.pgajtf0.mongodb.net/jobin?retryWrites=true&w=majority";
+// MongoDB Atlas connection string (replace <password> with your actual password)
+const uri = "mongodb+srv://chinyere:uqqzMpiisHWJDX0f@jobinairee.pgajtf0.mongodb.net/?retryWrites=true&w=majority";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 });
 
 // Function to connect to MongoDB Atlas
@@ -30,22 +27,16 @@ async function connectToMongoDB() {
   }
 }
 
-
-// Create a new person
+// CREATE: Adding a new person
 app.post('/api/people', async (req, res) => {
-  try {
-    // Connect to MongoDB
-    const db = await connectToMongoDB();
-    const collection = db.collection('people');
-    
-    // Get person data from request body
-    const personData = req.body;
-    
-    // Insert person data into the collection
-    const result = await collection.insertOne(personData);
+  const db = await connectToMongoDB();
+  const collection = db.collection('people');
+  const personData = req.body;
 
-    if (result && result.ops && result.ops.length > 0) {
-      res.status(201).json(result.ops[0]); // Return the created person
+  try {
+    const result = await collection.insertOne(personData);
+    if (result.insertedCount === 1) {
+      res.status(201).json(result.ops[0]);
     } else {
       res.status(500).json({ error: 'Failed to create a person' });
     }
@@ -55,14 +46,7 @@ app.post('/api/people', async (req, res) => {
   }
 });
 
-
-
-
-
-
-
-
-// READ: Fetching details of a person
+// READ: Fetching details of a person by ID
 app.get('/api/people/:id', async (req, res) => {
   const db = await connectToMongoDB();
   const collection = db.collection('people');
@@ -81,7 +65,7 @@ app.get('/api/people/:id', async (req, res) => {
   }
 });
 
-// UPDATE: Modifying details of an existing person
+// UPDATE: Modifying details of an existing person by ID
 app.put('/api/people/:id', async (req, res) => {
   const db = await connectToMongoDB();
   const collection = db.collection('people');
@@ -89,7 +73,10 @@ app.put('/api/people/:id', async (req, res) => {
   const updatedData = req.body;
 
   try {
-    const result = await collection.updateOne({ _id: ObjectId(personId) }, { $set: updatedData });
+    const result = await collection.updateOne(
+      { _id: ObjectId(personId) },
+      { $set: updatedData }
+    );
     if (result.matchedCount === 0) {
       res.status(404).json({ error: 'Person not found' });
     } else {
@@ -101,7 +88,7 @@ app.put('/api/people/:id', async (req, res) => {
   }
 });
 
-// DELETE: Removing a person
+// DELETE: Removing a person by ID
 app.delete('/api/people/:id', async (req, res) => {
   const db = await connectToMongoDB();
   const collection = db.collection('people');
